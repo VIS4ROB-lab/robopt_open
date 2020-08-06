@@ -42,8 +42,8 @@
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
 
-#include <robopt/common/common.h>
-#include <robopt/common/typedefs.h>
+#include <robopt_open/common/common.h>
+#include <robopt_open/common/typedefs.h>
 
 /// \brief robopt Main namespace of this package
 namespace robopt {

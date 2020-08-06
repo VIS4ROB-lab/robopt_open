@@ -43,10 +43,10 @@
 
 #include <aslam/cameras/camera.h>
 
-#include <robopt/common/common.h>
-#include <robopt/common/definitions.h>
-#include <robopt/local-parameterization/pose-quaternion-local-param.h>
-#include <robopt/reprojection-error/triangulation.h>
+#include <robopt_open/common/common.h>
+#include <robopt_open/common/definitions.h>
+#include <robopt_open/local-parameterization/pose-quaternion-local-param.h>
+#include <robopt_open/reprojection-error/triangulation.h>
 
 #include <fstream>
 /// \brief robopt Main namespace of this package

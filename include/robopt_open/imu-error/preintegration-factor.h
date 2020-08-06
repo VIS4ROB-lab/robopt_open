@@ -43,10 +43,10 @@
 
 #include <ceres/ceres.h>
 
-#include <robopt/imu-error/preintegration-base.h>
-#include <robopt/local-parameterization/quaternion-local-param.h>
-#include <robopt/common/definitions.h>
-#include <robopt/common/common.h>
+#include <robopt_open/imu-error/preintegration-base.h>
+#include <robopt_open/local-parameterization/quaternion-local-param.h>
+#include <robopt_open/common/definitions.h>
+#include <robopt_open/common/common.h>
 
 /// \brief robopt Main namespace of this package
 namespace robopt {

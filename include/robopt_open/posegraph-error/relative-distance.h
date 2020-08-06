@@ -41,9 +41,9 @@
 #include <ceres/ceres.h>
 #include <ceres/cost_function.h>
 
-#include <robopt/common/common.h>
-#include <robopt/common/definitions.h>
-#include <robopt/local-parameterization/pose-quaternion-local-param.h>
+#include <robopt_open/common/common.h>
+#include <robopt_open/common/definitions.h>
+#include <robopt_open/local-parameterization/pose-quaternion-local-param.h>
 
 /// \brief robopt Main namespace of this package
 namespace robopt {

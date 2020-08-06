@@ -39,7 +39,7 @@
 #include <Eigen/Core>
 #include <ceres/ceres.h>
 
-#include <robopt/local-parameterization/quaternion-yaw-local-param.h>
+#include <robopt_open/local-parameterization/quaternion-yaw-local-param.h>
 
 /// \brief robopt Main namespace of this package
 namespace robopt {
