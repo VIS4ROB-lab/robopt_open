@@ -9,5 +9,4 @@
 - git: {local-name: doxygen_catkin, uri: 'git@github.com:ethz-asl/doxygen_catkin.git'}
 - git: {local-name: aslam_cv2, uri: 'git@github.com:ethz-asl/aslam_cv2.git'}
 - git: {local-name: gflags_catkin, uri: 'git@github.com:ethz-asl/gflags_catkin.git'}
-- git: {local-name: mav_control_rw, uri: 'git@github.com:ethz-asl/mav_control_rw.git'}
 - git: {local-name: minkindr, uri: 'git@github.com:ethz-asl/minkindr.git'}
