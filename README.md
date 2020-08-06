@@ -19,7 +19,7 @@ Clone the dependencies:
 ```
 $ cd ~/catkin_ws/src
 $ wstool init
-$ wstool merge robopt_open/dependencies_ssh.rosinstall
+$ wstool merge robopt_open/dependencies_ssh.rosinstall # To clone with https: robopt_open/dependencies_https.rosinstall
 $ wstool up -j8
 ```  
 

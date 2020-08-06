@@ -4,6 +4,7 @@
 - git: {local-name: glog_catkin, uri: 'git@github.com:ethz-asl/glog_catkin.git'}
 - git: {local-name: protobuf_catkin, uri: 'git@github.com:ethz-asl/protobuf_catkin.git'}
 - git: {local-name: ceres_catkin, uri: 'git@github.com:ethz-asl/ceres_catkin.git'}
+- git: {local-name: yaml_cpp_catkin, uri: 'git@github.com:ethz-asl/yaml_cpp_catkin.git'}
 - git: {local-name: opencv3_catkin, uri: 'git@github.com:ethz-asl/opencv3_catkin.git'}
 - git: {local-name: doxygen_catkin, uri: 'git@github.com:ethz-asl/doxygen_catkin.git'}
 - git: {local-name: aslam_cv2, uri: 'git@github.com:ethz-asl/aslam_cv2.git'}
