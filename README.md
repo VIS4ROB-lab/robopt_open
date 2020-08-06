@@ -1,7 +1,7 @@
 # Robotic Optimization (ROBOPT) Library #
 Package to simplify implementation of optimization problems in Ceres commonly used in robotics.
 
-## Dependencies  
+## Installation  
 In order to install RobOpt, follow these steps. First, create a catkin workspace:
 ```
 $ mkdir -p catkin_ws/src
