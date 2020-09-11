@@ -1,8 +1,7 @@
 # Robotic Optimization (ROBOPT) Library #
-Package to simplify implementation of optimization problems in Ceres commonly used in robotics.
+Package to simplify implementation of optimization problems in Ceres commonly used in robotics.  
 
 This repository is used in a wider framework for multi-robot state estimation and path planning, available [here](https://github.com/VIS4ROB-lab/multi_robot_coordination).  
-
 If you use this code in your academic work, please cite:
 
     @inproceedings{bartolomei2020multi,
