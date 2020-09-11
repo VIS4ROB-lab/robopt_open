@@ -1,8 +1,19 @@
 # Robotic Optimization (ROBOPT) Library #
 Package to simplify implementation of optimization problems in Ceres commonly used in robotics.
 
+This repository is used in a wider framework for multi-robot state estimation and path planning, available [here](https://github.com/VIS4ROB-lab/multi_robot_coordination).  
+
+If you use this code in your academic work, please cite:
+
+    @inproceedings{bartolomei2020multi,
+      title={Multi-robot Coordination with Agent-Server Architecture for Autonomous Navigation in Partially Unknown Environments},
+      author={Bartolomei, Luca and Karrer, Marco and Chli, Margarita},
+      booktitle={2020 {IEEE/RSJ} International Conference on Intelligent Robots and Systems ({IROS})},
+      year={2020}
+    }
+
 ## Installation  
-In order to install RobOpt, follow these steps. First, create a catkin workspace:
+In order to install RobOpt Open, follow these steps. First, create a catkin workspace:
 ```
 $ mkdir -p catkin_ws/src
 $ cd catkin_ws
