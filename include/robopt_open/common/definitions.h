@@ -53,12 +53,12 @@ static const int kInverseDepthBlockSize = 1;
 static const int kPositionBlockSize = 3;
 static const int kPoseBlockSize = 7;
 
-// Specify in which direction the relative projection is perfomed. 
+// Specify in which direction the relative projection is perfomed.
 // kNormal: The optimized relative pose is directly used to transform points.
 // kInverse: The inversed relative pose is used to transform points.
 enum RelativeProjectionType {kNormal, kInverse};
 
-}; // namespace visual
+} // namespace visual
 
 namespace pose {
 
@@ -85,8 +85,8 @@ enum StateOrder {
   kBiasG = 12
 };
 
-}; // namespace pose
+} // namespace pose
 
-}; // namespace defs
+} // namespace defs
 
-}; // namespace robopt
+} // namespace robopt
