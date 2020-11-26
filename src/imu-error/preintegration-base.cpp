@@ -132,7 +132,15 @@ Eigen::Matrix<double, 15, 1> PreintegrationBase::evaluate(
       q_W_S1.inverse() *(0.5 * g_ * sum_dt_ * sum_dt_ + p_W_S2 - p_W_S1 -
       v_S1 * sum_dt_) - corrected_delta_p;
   Eigen::Vector3d rot_diff;
-  common::quaternion::Minus(q_W_S1.inverse()*q_W_S2, corrected_delta_q,
+  Eigen::Quaterniond q_S1_S2 = q_W_S1.inverse()*q_W_S2;
+  if (q_S1_S2.w() < 0) {
+    q_S1_S2.w() = -q_S1_S2.w();
+    q_S1_S2.x() = -q_S1_S2.x();
+    q_S1_S2.y() = -q_S1_S2.y();
+    q_S1_S2.z() = -q_S1_S2.z();
+  }
+
+  common::quaternion::Minus(q_S1_S2, corrected_delta_q,
       &rot_diff);
   residuals.block<3,1>(defs::pose::StateOrder::kRotation, 0) = rot_diff;
   residuals.block<3,1>(defs::pose::StateOrder::kVelocity, 0) =
