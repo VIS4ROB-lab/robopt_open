@@ -156,10 +156,23 @@ bool PreintegrationFactor::Evaluate(const double * const *parameters,
               defs::pose::StateOrder::kVelocity) = -Eigen::Matrix3d::Identity();
 
       // Derivatives w.r.t. b_G1
-      J_res_wrt_vb1.block<3,3>(defs::pose::StateOrder::kRotation,
-              defs::pose::StateOrder::kBiasG -
-              defs::pose::StateOrder::kVelocity) =
-          -gamma_rot_err_inv * (R_W_S2.transpose() * R_W_S1) * dq_dbg.transpose();
+      // Get the deltas
+      Eigen::Quaterniond delta_q;
+      Eigen::Vector3d delta_p, delta_v;
+      pre_integration_->getDelta(&delta_p, &delta_q, &delta_v);
+
+      // Get the linearized bias
+      Eigen::Vector3d lin_bias_a, lin_bias_g;
+      pre_integration_->getLinearizedBias(&lin_bias_a, &lin_bias_g);
+      Eigen::Vector3d dbg = b_g1 - lin_bias_g;
+      Eigen::Quaterniond corrected_delta_q;
+      common::quaternion::Plus(delta_q, dq_dbg * dbg, &corrected_delta_q);
+       J_res_wrt_vb1.block<3,3>(defs::pose::StateOrder::kRotation,
+               defs::pose::StateOrder::kBiasG -
+               defs::pose::StateOrder::kVelocity) =
+          -gamma_rot_err_inv * (R_W_S2.transpose() * R_W_S1) *
+          corrected_delta_q.toRotationMatrix() *
+          common::quaternion::Gamma(dq_dbg * dbg) * dq_dbg;
       J_res_wrt_vb1.block<3,3>(defs::pose::StateOrder::kPosition,
               defs::pose::StateOrder::kBiasG -
               defs::pose::StateOrder::kVelocity) = -dp_dbg;
@@ -218,7 +231,7 @@ bool PreintegrationFactor::Evaluate(const double * const *parameters,
       J_res_wrt_vb2 = sqrt_info * J_res_wrt_vb2;
     }
   }
-  
+
   return true;
 }
 

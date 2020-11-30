@@ -124,7 +124,7 @@ Eigen::Matrix<double, 15, 1> PreintegrationBase::evaluate(
   Eigen::Quaterniond exact_sum;
   common::quaternion::Plus(delta_q_, dq_dbg * dbg, &exact_sum);
   Eigen::Quaterniond corrected_delta_q = exact_sum;
-      //delta_q_ * common::quaternion::DeltaQ(dq_dbg * dbg);
+//      delta_q_ * common::quaternion::DeltaQ(dq_dbg * dbg);
   Eigen::Vector3d corrected_delta_v = delta_v_ + dv_dba * dba + dv_dbg * dbg;
   Eigen::Vector3d corrected_delta_p = delta_p_ + dp_dba * dba + dp_dbg * dbg;
 
@@ -139,7 +139,6 @@ Eigen::Matrix<double, 15, 1> PreintegrationBase::evaluate(
     q_S1_S2.y() = -q_S1_S2.y();
     q_S1_S2.z() = -q_S1_S2.z();
   }
-
   common::quaternion::Minus(q_S1_S2, corrected_delta_q,
       &rot_diff);
   residuals.block<3,1>(defs::pose::StateOrder::kRotation, 0) = rot_diff;
@@ -258,9 +257,7 @@ void PreintegrationBase::midPointIntegration(double dt,
   // Compute the bias corrected accelerations & velocities
   Eigen::Vector3d un_acc_0 = delta_q_ * (acc_0_ - linear_bias_a_);
   Eigen::Vector3d un_gyr = 0.5 * (gyr_0_ + gyr_1_) - linear_bias_g_;
-  Eigen::Quaterniond un_gyr_quat = Eigen::Quaterniond(
-        1.0, un_gyr(0) * dt/2.0, un_gyr(1) * dt/2.0, un_gyr(2) * dt/2.0);
-  un_gyr_quat.normalize();
+  Eigen::Quaterniond un_gyr_quat = common::quaternion::ExpMap(un_gyr * dt);
   *result_delta_q = delta_q_ * un_gyr_quat;
   Eigen::Vector3d un_acc_1 = (*result_delta_q) * (acc_1_ - linear_bias_a_);
   Eigen::Vector3d un_acc = 0.5 * (un_acc_0 + un_acc_1);
@@ -320,20 +317,20 @@ void PreintegrationBase::midPointIntegration(double dt,
     V.block<3,3>(defs::pose::StateOrder::kPosition,0) =
         0.25 * R_delta_q * dt * dt;
     V.block<3,3>(defs::pose::StateOrder::kPosition,3) =
-        -0.25 * R_result_delta_q * R_a_1_x  * dt * dt * 0.5 * dt;
+        -0.25 * R_result_delta_q * R_a_1_x  * dt * dt * 0.5 * gamma_un_gyr * dt;
     V.block<3,3>(defs::pose::StateOrder::kPosition,6) =
         0.25 * R_result_delta_q * dt * dt;
-    V.block<3,3>(defs::pose::StateOrder::kPosition,9) = V.block<3, 3>(0, 3);
+    V.block<3,3>(defs::pose::StateOrder::kPosition,9) = V.block<3, 3>(defs::pose::StateOrder::kPosition, 3);
     V.block<3,3>(defs::pose::StateOrder::kRotation,3) =
-        0.5 * Eigen::Matrix3d::Identity() * dt;
+        0.5 * gamma_un_gyr * dt;
     V.block<3,3>(defs::pose::StateOrder::kRotation,9) =
-        0.5 * Eigen::Matrix3d::Identity() * dt;
+        0.5 * gamma_un_gyr * dt;
     V.block<3,3>(defs::pose::StateOrder::kVelocity,0) = 0.5 * R_delta_q * dt;
     V.block<3,3>(defs::pose::StateOrder::kVelocity,3) =
-        -0.5 * R_result_delta_q * R_a_1_x  * dt * 0.5 * dt;
+        -0.5 * R_result_delta_q * R_a_1_x * gamma_un_gyr * dt * 0.5 * dt;
     V.block<3,3>(defs::pose::StateOrder::kVelocity,6) =
         0.5 * R_result_delta_q * dt;
-    V.block<3,3>(defs::pose::StateOrder::kVelocity,9) = V.block<3,3>(6,3);
+    V.block<3,3>(defs::pose::StateOrder::kVelocity,9) = V.block<3,3>(defs::pose::StateOrder::kVelocity,3);
     V.block<3,3>(defs::pose::StateOrder::kBiasA,12) =
         Eigen::Matrix3d::Identity() * dt;
     V.block<3,3>(defs::pose::StateOrder::kBiasG,15) =
@@ -342,7 +339,7 @@ void PreintegrationBase::midPointIntegration(double dt,
     step_jacobian_ = F;
     jacobian_ = F * jacobian_;
     covariance_ = F * covariance_ * F.transpose() +
-        V * noise_c_ * V.transpose();
+        V * noise_c_ * V.transpose() / dt;
     step_V_ = V;
   }
 }
