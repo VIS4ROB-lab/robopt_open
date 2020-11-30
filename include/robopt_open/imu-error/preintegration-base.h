@@ -111,6 +111,10 @@ public:
   /// @return The 15x15 square root information matrix.
   Eigen::Matrix<double, 15, 15> getSquareRootInformation();
 
+  /// \brief Get the coviariance matrix of the current state.
+  /// @return The 15x15 covariance matrix
+  Eigen::Matrix<double, 15, 15> getCovariance() const { return covariance_; }
+
   /// \brief Get the jacobian matrix of the current state.
   /// @return The 15x15 jacobian matrix.
   Eigen::Matrix<double, 15, 15> getJacobian() { return jacobian_;}
@@ -230,7 +234,7 @@ protected:
 public:
   FRIEND_TEST(PreintegrationBaseTerms, IntegrationJacobianState);
   FRIEND_TEST(PreintegrationBaseTerms, IntegrationJacobianNoise);
-        
+
 };
 
 } // namespace imu
