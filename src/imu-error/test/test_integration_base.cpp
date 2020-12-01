@@ -3,7 +3,7 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <ceres/ceres.h>
-#include <eigen-checks/glog.h>
+#include <eigen-checks/gtest.h>
 #include <glog/logging.h>
 #include <gtest/gtest.h>
 
@@ -243,9 +243,9 @@ TEST_F(PreintegrationBaseTerms, NoiseFreeIntegration) {
         (vSpeedBiasGT_[i+1].head<3>() - vSpeedBiasGT_[i].head<3>());
 
     delete tmpBase;
-    CHECK_EIGEN_MATRIX_NEAR(delta_p_gt, delta_p, 1e-2);
-    CHECK_EIGEN_MATRIX_NEAR(delta_q_gt_v, delta_q_v, 1e-2);
-    CHECK_EIGEN_MATRIX_NEAR(delta_v_gt, delta_v, 5e-2);
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(delta_p_gt, delta_p, 1e-2));
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(delta_q_gt_v, delta_q_v, 1e-2));
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(delta_v_gt, delta_v, 5e-2));
   }
 }
 
@@ -319,7 +319,7 @@ TEST_F(PreintegrationBaseTerms, IntegrationJacobianState) {
     J_num.block<15,1>(0,i) = difference/delta;
   }
 
-  CHECK_EIGEN_MATRIX_NEAR(tmpBase1->step_jacobian_, J_num, 1e-6);
+  CHECK_EIGEN_MATRIX_NEAR(tmpBase1->step_jacobian_, J_num, 1e-6));
 }
 
 TEST_F(PreintegrationBaseTerms, IntegrationJacobianNoise) {
@@ -368,7 +368,7 @@ TEST_F(PreintegrationBaseTerms, IntegrationJacobianNoise) {
     tmpBase2->acc_0_ += dist.segment<3>(0);
     tmpBase2->gyr_0_ += dist.segment<3>(3);
     tmpBase2->acc_1_ += dist.segment<3>(6);
-    tmpBase2->gyr_0_ += dist.segment<3>(9);
+    tmpBase2->gyr_1_ += dist.segment<3>(9);
     tmpBase2->linear_bias_a_ += dist.segment<3>(12) * dt;
     tmpBase2->linear_bias_g_ += dist.segment<3>(15) * dt;
     tmpBase2->midPointIntegration(dt, &result_p_dist, &result_q_dist,
@@ -393,7 +393,7 @@ TEST_F(PreintegrationBaseTerms, IntegrationJacobianNoise) {
     J_num.block<15,1>(0,i) = difference/delta;
   }
 
-  CHECK_EIGEN_MATRIX_NEAR(J_an, J_num, 1e-4);
+  EXPECT_TRUE(EIGEN_MATRIX_NEAR(J_an, J_num, 1e-4));
 }
 
 } // namespace imu

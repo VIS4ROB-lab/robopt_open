@@ -3,7 +3,7 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <ceres/ceres.h>
-#include <eigen-checks/glog.h>
+#include <eigen-checks/gtest.h>
 #include <glog/logging.h>
 #include <gtest/gtest.h>
 
@@ -28,10 +28,11 @@ protected:
   typedef PreintegrationFactor ErrorTerm;
 
   virtual void SetUp() {
-    const size_t numFrames = 20; // meaning 1s!
+    const size_t numFrames = 2; // meaning 1s!
     const size_t numMPs = 1000;
     const double dt = 1.0/imuParameters.rate;
-    const size_t numIMU = numFrames*imuParameters.rate/10; // 20Hz frequency
+    const size_t numIMU = numFrames*imuParameters.rate/20; // 20Hz frequency
+    const size_t meas_per_frame = numIMU/numFrames;
     vPreintBase_.reserve(numFrames - 1);
 
     // generate random motion
@@ -78,7 +79,7 @@ protected:
     Eigen::Matrix4d Tws_end;
     for (size_t i = 0; i < numIMU; ++i) {
       double time = double(i)/imuParameters.rate;
-      if ((i%10) == 0) {
+      if ((i%meas_per_frame) == 0) {
         Tws_gt.push_back(Tws);
         vTwsGT_.push_back(Tws);
         accMeas.push_back(accMeasTmp);
@@ -178,14 +179,14 @@ protected:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     double a_max = 1000.0;  ///< Accelerometer saturation. [m/s^2]
     double g_max = 1000.0;  ///< Gyroscope saturation. [rad/s]
-    double sigma_g_c = 6.0e-3;  ///< Gyroscope noise density.
+    double sigma_g_c = 6.0e-5;  ///< Gyroscope noise density.
     double sigma_bg  = 0.05;  ///< Initial gyroscope bias.
     Eigen::Vector3d biasA;
     Eigen::Vector3d biasG;
-    double sigma_a_c = 2.0e-2;  ///< Accelerometer noise density.
+    double sigma_a_c = 2.0e-4;  ///< Accelerometer noise density.
     double sigma_ba = 0.1;  ///< Initial accelerometer bias
-    double sigma_gw_c = 3.0e-4; ///< Gyroscope drift noise density.
-    double sigma_aw_c = 2.0e-3; ///< Accelerometer drift noise density.
+    double sigma_gw_c = 3.0e-6; ///< Gyroscope drift noise density.
+    double sigma_aw_c = 2.0e-5; ///< Accelerometer drift noise density.
     double g = 9.81;  ///< Earth acceleration.
     Eigen::Vector3d a0 = Eigen::Vector3d::Zero();
       ///< Mean of the prior accelerometer bias.
@@ -304,8 +305,8 @@ TEST_F(PreintegrationErrorTerms, Jacobians) {
           difference / delta;
     }
 
-    CHECK_EIGEN_MATRIX_NEAR(J_res_wrt_T_W_S1, J_res_wrt_T_W_S1_num,
-                            J_res_wrt_T_W_S1_num.norm() *1e-5);
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(J_res_wrt_T_W_S1, J_res_wrt_T_W_S1_num,
+                            J_res_wrt_T_W_S1_num.norm() *1e-5));
 
     // Jacobian for speed_bias1
     for (size_t i = 0; i < 9; ++i) {
@@ -329,8 +330,8 @@ TEST_F(PreintegrationErrorTerms, Jacobians) {
     }
 
     // TODO: shouldn't tolerance be lower?
-    CHECK_EIGEN_MATRIX_NEAR(J_res_wrt_speed_bias1, J_res_wrt_speed_bias1_num,
-                            J_res_wrt_speed_bias1_num.norm() *1e-5);
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(J_res_wrt_speed_bias1, J_res_wrt_speed_bias1_num,
+                            J_res_wrt_speed_bias1_num.norm() *1e-5));
 
     // Jacobian for T_W_S2
     for (size_t i = 0; i < defs::pose::kPoseBlockSize; ++i) {
@@ -355,8 +356,8 @@ TEST_F(PreintegrationErrorTerms, Jacobians) {
           difference / delta;
     }
 
-    CHECK_EIGEN_MATRIX_NEAR(J_res_wrt_T_W_S2, J_res_wrt_T_W_S2_num,
-                             J_res_wrt_T_W_S2_num.norm() *1e-5);
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(J_res_wrt_T_W_S2, J_res_wrt_T_W_S2_num,
+                             J_res_wrt_T_W_S2_num.norm() *1e-5));
 
     // Jacobian for speed_bias1
     for (size_t i = 0; i < 9; ++i) {
@@ -379,8 +380,8 @@ TEST_F(PreintegrationErrorTerms, Jacobians) {
           difference / delta;
     }
 
-    CHECK_EIGEN_MATRIX_NEAR(J_res_wrt_speed_bias2, J_res_wrt_speed_bias2_num,
-                            J_res_wrt_speed_bias2_num.norm() *1e-5);
+    EXPECT_TRUE(EIGEN_MATRIX_NEAR(J_res_wrt_speed_bias2, J_res_wrt_speed_bias2_num,
+                            J_res_wrt_speed_bias2_num.norm() *1e-5));
   }
 }
 
